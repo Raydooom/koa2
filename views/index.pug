@@ -1,0 +1,35 @@
+extends modules/layout
+
+block content
+    include modules/header.pug
+    section(class="swiper-container w-fit banner")
+        div(class="swiper-wrapper")
+            div(class="swiper-slide")
+                img(src='/images/banner1.jpg')
+            div(class="swiper-slide")
+                img(src='/images/banner2.jpg')
+        div(class="swiper-pagination")
+        div(class="swiper-button-next swiper-button-white")
+        div(class="swiper-button-prev swiper-button-white")
+    section(class="screen")
+    section(class="post-list w-fit")
+        ul
+            each item in postList
+                -var date = item.post.date.toLocaleDateString()
+                li
+                    div(class="post-cover")
+                        a(href="/post?id="+item.post.id)
+                            img(src=item.post.cover)
+                            i(class="iconfont icon-sousuo")
+                    div(class="post-info")
+                        h2 
+                            a(href="/post") #{item.post.title}
+                        h4 
+                            a(href="/post") #{item.category}
+                        div(class="info")
+                            i(class="iconfont icon-liulan")  #{item.post.views}
+                            i(class="iconfont icon-pinglun")  #{item.post.comments}
+                            i(class="iconfont icon-zan")  #{item.post.praises}
+                    div(class="post-time")
+                            span 发布时间：#{date}
+    include modules/footer.pug

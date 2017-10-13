@@ -1,0 +1,43 @@
+extends modules/layout
+
+block content
+    include modules/header.pug
+    section(id="gallery", class="w-fit flex-images")
+        each item in post
+            div(class="item", data-w="200", data-h="150")
+                img(src="/icons/loading.gif", data-src=item.img)
+                div(class="img-info")
+                    h2 #{item.title}
+                    span
+                        i(class="like-btn iconfont icon-xiangqu")
+    //- 图片弹窗
+    section(class="album-popup")
+        div(class="album-content")
+            span(class="close-btn")
+                i(class="iconfont icon-roundclosefill")
+            div(class="album-main")
+                img(src=post[0].img)
+            div(class="text-info" id="scroll-container")
+                h2 #{post[0].title}
+                p #{post[0].description}
+                div(class="action-btn")
+                    span
+                        i(class="like-btn iconfont icon-xiangqu")
+                        b 点赞 #{post[0].praise}
+                    span
+                        i(class="iconfont icon-fenxiang")
+                        b 分享
+                div(class="album-info")
+                    span 图片信息
+                div(class="comment")
+                    div(class="form-con")
+                        textarea(placeholder="请输入评论",rows="4")
+                        button 评论
+                    dl(class="comment-list")
+                        dt 评论列表（88）
+                        each item in [1,1,1,1,1,1,1,1,1]
+                            dd
+                                span 小花花：
+                                are but a reflection of our souls. Join my 500px free live editing demo this Fri
+    script
+    include modules/footer.pug
