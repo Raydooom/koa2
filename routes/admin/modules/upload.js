@@ -18,11 +18,9 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 //路由  
 router.post('/upload', upload.single('file'), async(ctx, next) => {
-    if (ctx.request.method == "OPTIONS") {
-        ctx.response.status = 200
-    }
+    console.log(ctx.req)
     ctx.body = {
-        filename: '/uploads/'+ctx.req.file.filename, //返回文件路径
+        filename: '/uploads/'+ctx.req.file.filename //返回文件名
     }
 })
 
