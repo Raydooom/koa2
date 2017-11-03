@@ -1,4 +1,5 @@
 const router = require('koa-router')()
+const fs = require('fs')
     // 链接数据库
 const sql = require('./../config/db.config.js')
 const moment = require('moment')
@@ -33,9 +34,57 @@ router.get('/admin/login', async(ctx, next) => {
  * 获取所有相册
  */
 router.get('/admin/allAlbum', async(ctx, next) => {
-    await sql.query("SELECT * FROM album_list limit 0,10")
+    var page = parseInt(ctx.query.page) || 0;
+    var pageSize = parseInt(ctx.query.pageSize) || 2;
+
+    console.log(page * pageSize, page + pageSize)
+
+    var count;
+    await sql.query("SELECT * FROM album_list")
         .then(result => {
-            ctx.body = result;
+            count = result.length;
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    await sql.query("SELECT * FROM album_list ORDER BY date desc limit " + page * pageSize + "," + page + pageSize)
+        .then(result => {
+            ctx.body = {
+                count: count,
+                data: result
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        })
+})
+
+/**
+ * 删除相册
+ */
+router.get('/admin/album/del', async(ctx, next) => {
+    var albumId = ctx.query.albumId;
+    var imgUrl;
+    await sql.query("select * from album_list where id = " + albumId)
+        .then(res => {
+            imgUrl = res[0].cover;
+        })
+
+    // 删除文件
+    var fileUrl = imgUrl.replace("https://api.raydom.wang","public")
+    await fs.readFile(fileUrl, (err, data) => {
+        if (fs.existsSync(fileUrl)) {
+            fs.unlinkSync(fileUrl);
+        }
+    });
+
+    // 数据库删除数据
+    await sql.query("delete from album_list where id=" + albumId)
+        .then(result => {
+            ctx.body = {
+                state: 1,
+                info: "删除成功！"
+            }
         })
         .catch(error => {
             console.log(error);
@@ -43,13 +92,10 @@ router.get('/admin/allAlbum', async(ctx, next) => {
 })
 
 
-
 /**
  * 添加相册
- * 1.添加相册封面图、标题、描述、关键词等
+ * 0.获取相册分类（添加相册时）
  */
-
-// 获取相册分类（添加相册时）
 router.get('/admin/album/categorys', async(ctx, next) => {
     await sql.query("SELECT * FROM categorys")
         .then(result => {
@@ -75,7 +121,7 @@ router.get('/admin/categorys/add', async(ctx, next) => {
         })
 })
 
-// 添加相册
+// 1.添加相册
 router.get('/admin/album/add', async(ctx, next) => {
     let albumInfo = ctx.query;
     console.log(albumInfo)
@@ -84,6 +130,7 @@ router.get('/admin/album/add', async(ctx, next) => {
         .then(result => {
             res = "添加成功!"
         })
+        // 添加成功以后获取最新添加的
     await sql.query("select max(id) from album_list")
         .then(result => {
             ctx.body = {
@@ -95,7 +142,6 @@ router.get('/admin/album/add', async(ctx, next) => {
 })
 
 /**
- * 添加相册
  * 2.添加相册中图片内容文字
  */
 // 根据相册id查询该相册信息
@@ -112,7 +158,7 @@ router.get('/admin/album/albumInfo', async(ctx, next) => {
     };
 })
 
-// 添加相册内容
+// 相册添加照片文字内容
 router.get('/admin/album/addDetail', async(ctx, next) => {
     var photoList = ctx.query;
     console.log(photoList, photoList.album_id, photoList.title)

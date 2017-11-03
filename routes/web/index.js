@@ -42,7 +42,7 @@ router.get('/kinds', async(ctx, next) => {
     for (var item in kinds) {
         await sql.query("SELECT * FROM album_list WHERE categoryId = " + kinds[item].id + " ORDER BY date")
             .then(result => {
-                if (result.length > 0)
+                if (result.length != 0)
                     res[item] = {
                         id: kinds[item].id,
                         kindName: kinds[item].name,
@@ -50,7 +50,6 @@ router.get('/kinds', async(ctx, next) => {
                         localAlbum: result[result.length - 1].title,
                         kindCover: result[result.length - 1].cover
                     }
-                    // console.log(kinds[item].id)
             }).catch(error => {
                 console.log(error);
             })
@@ -61,7 +60,7 @@ router.get('/kinds', async(ctx, next) => {
 
 // 所有分类页banner图展示相册
 router.get('/mainShow', async(ctx, next) => {
-    await sql.query("SELECT * FROM album_list WHERE main_show = 1")
+    await sql.query("SELECT * FROM album_list WHERE main_show = 1 ORDER BY date desc")
         .then(result => {
             res = result;
         }).catch(error => {
