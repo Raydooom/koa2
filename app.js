@@ -9,10 +9,20 @@ const logger = require('koa-logger')
 const index = require('./routes/web/index')
 const users = require('./routes/web/users')
 
-// 后台接口
-const admin = require('./routes/admin/index')
+/**
+ * 后台接口路由定义
+ */
+// 热门图片模块
+const hot = require('./routes/admin/hot')
+// 相册模块
+const adminIndex = require('./routes/admin/index')
+// 上传图片模块
 const upload = require('./routes/admin/modules/upload')
+// 留言板模块
+const messageBoard = require('./routes/admin/messageBoard')
+// 获取图片Exif信息模块
 const getExif = require('./routes/admin/modules/getExif')
+
 
 // error handler
 onerror(app)
@@ -55,8 +65,10 @@ app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 
 // 后台路由
-app.use(admin.routes(), admin.allowedMethods())
+app.use(hot.routes(), hot.allowedMethods())
+app.use(adminIndex.routes(), adminIndex.allowedMethods())
 app.use(upload.routes(), upload.allowedMethods())
+app.use(messageBoard.routes(), messageBoard.allowedMethods())
 app.use(getExif.routes(), getExif.allowedMethods())
 
 // error-handling

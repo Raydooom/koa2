@@ -1,3 +1,6 @@
+/**
+ * 相册管理模块
+ */
 const router = require('koa-router')()
 const fs = require('fs')
     // 链接数据库
@@ -52,38 +55,6 @@ router.get('/admin/allAlbum', async(ctx, next) => {
             ctx.body = {
                 count: count,
                 data: result
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        })
-})
-
-/**
- * 删除相册
- */
-router.get('/admin/album/del', async(ctx, next) => {
-    var albumId = ctx.query.albumId;
-    var imgUrl;
-    await sql.query("select * from album_list where id = " + albumId)
-        .then(res => {
-            imgUrl = res[0].cover;
-        })
-
-    // 删除文件
-    var fileUrl = imgUrl.replace("https://api.raydom.wang","public")
-    await fs.readFile(fileUrl, (err, data) => {
-        if (fs.existsSync(fileUrl)) {
-            fs.unlinkSync(fileUrl);
-        }
-    });
-
-    // 数据库删除数据
-    await sql.query("delete from album_list where id=" + albumId)
-        .then(result => {
-            ctx.body = {
-                state: 1,
-                info: "删除成功！"
             }
         })
         .catch(error => {
@@ -167,6 +138,40 @@ router.get('/admin/album/addDetail', async(ctx, next) => {
             res = "添加成功!"
         })
     ctx.body = res;
+})
+
+
+
+/**
+ * 删除相册
+ */
+router.get('/admin/album/del', async(ctx, next) => {
+    var albumId = ctx.query.albumId;
+    var imgUrl;
+    await sql.query("select * from album_list where id = " + albumId)
+        .then(res => {
+            imgUrl = res[0].cover;
+        })
+
+    // 删除文件
+    var fileUrl = imgUrl.replace("https://api.raydom.wang","public")
+    await fs.readFile(fileUrl, (err, data) => {
+        if (fs.existsSync(fileUrl)) {
+            fs.unlinkSync(fileUrl);
+        }
+    });
+
+    // 数据库删除数据
+    await sql.query("delete from album_list where id=" + albumId)
+        .then(result => {
+            ctx.body = {
+                state: 1,
+                info: "删除成功！"
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        })
 })
 
 

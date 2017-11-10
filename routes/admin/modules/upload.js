@@ -1,3 +1,8 @@
+/**
+ * [router description] [图片上传模块]
+ * @type {[type]} 
+ * @returns {[json]} [图片文件名]
+ */
 const router = require('koa-router')()
     // 链接数据库
 const sql = require('./../../config/db.config.js')
