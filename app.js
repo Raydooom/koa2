@@ -9,7 +9,7 @@ const logger = require('koa-logger')
 const index = require('./routes/web/index')
 const users = require('./routes/web/users')
 const postcard = require('./routes/web/postcard')
-
+const service = require('./routes/web/service')
 /**
  * 后台接口路由定义
  */
@@ -65,6 +65,7 @@ app.use(async(ctx, next) => {
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 app.use(postcard.routes(), postcard.allowedMethods())
+app.use(service.routes(), service.allowedMethods())
 // 后台路由
 app.use(hot.routes(), hot.allowedMethods())
 app.use(adminIndex.routes(), adminIndex.allowedMethods())
