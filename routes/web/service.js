@@ -21,7 +21,6 @@ router.get('/msg', async(ctx, next) => {
 })
 
 router.put('/msg', async(ctx, next) => {
-    console.log(ctx.query)
     ctx.body = "123"
     
 })
