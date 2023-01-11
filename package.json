@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "co-mysql": "^1.0.0",
-    "debug": "^2.6.3",
+    "debug": "^3.1.0",
     "exif": "^0.6.0",
     "koa": "^2.2.0",
     "koa-bodyparser": "^3.2.0",
